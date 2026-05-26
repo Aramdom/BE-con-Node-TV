@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User CRUD & Security Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1a153b 0%, #0d0b18 50%, #07060d 100%);
+      --panel-bg: rgba(20, 18, 38, 0.45);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --secondary: #06b6d4;
+      --secondary-hover: #0891b2;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #10b981;
+      --glow-color: rgba(139, 92, 246, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 2rem 1.5rem;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Container layout */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Header styling with glow */
+    header {
+      text-align: center;
+      padding: 2.5rem;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 40px var(--glow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25%;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 30%, #a78bfa 70%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* Badge group */
+    .credentials-info {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .badge strong {
+      color: var(--text-main);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .badge.active {
+      border-color: rgba(6, 182, 212, 0.3);
+      background: rgba(6, 182, 212, 0.05);
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      .grid-full-width {
+        grid-column: span 2;
+      }
+    }
+
+    /* Panel Card */
+    .panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .panel:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.05);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.75rem;
+    }
+
+    .panel-header h2 {
+      font-size: 1.4rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Custom Form elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      color: #fff;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #a78bfa);
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      width: auto;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* User Grid Card */
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .user-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .user-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+    }
+    .user-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    .user-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .user-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.25s ease;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.01);
+    }
+
+    .user-info h3 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-role-badge {
+      font-size: 0.7rem;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .user-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .action-btn-edit:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+    }
+
+    .action-btn-delete:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
+    }
+
+    /* Logs & HTTP Monitor */
+    .log-monitor {
+      background: #090810;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 1.25rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .log-entry {
+      border-left: 3px solid var(--primary);
+      padding-left: 0.75rem;
+      animation: logFadeIn 0.3s ease-out;
+    }
+
+    @keyframes logFadeIn {
+      from { opacity: 0; transform: translateX(-5px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .log-method {
+      font-weight: 700;
+      color: var(--secondary);
+    }
+    
+    .log-method.method-post { color: #f59e0b; }
+    .log-method.method-put { color: var(--primary); }
+    .log-method.method-delete { color: var(--danger); }
+    
+    .log-status {
+      font-weight: 600;
+    }
+    .status-2xx { color: var(--success); }
+    .status-4xx { color: var(--danger); }
+
+    .log-body {
+      white-space: pre-wrap;
+      color: #93c5fd;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 0.8rem;
+    }
+
+    /* Notification Toasts */
+    .toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      background: rgba(20, 18, 38, 0.95);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      color: var(--text-main);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 350px;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.toast-success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.toast-error {
+      border-left: 4px solid var(--danger);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <header>
+      <h1>User CRUD & Security Dashboard</h1>
+      <p>Prueba en tiempo real los endpoints de tu API protegidos por middlewares de autorización</p>
+      
+      <div class="credentials-info">
+        <div class="badge">
+          <span>Cabecera global:</span>
+          <strong>Authorization: fha5HpDXSXSjKU0QCbdXiz1a</strong>
+        </div>
+        <div class="badge active">
+          <span>Cabecera no-GET:</span>
+          <strong>token: HIZe4D32twWOUP9h0I1IVTlr</strong>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      
+      <!-- Panel de Formulario (Crear/Modificar) -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 id="form-title">👤 Crear Nuevo Usuario</h2>
+          <button id="cancel-edit" class="btn btn-secondary" style="display: none; padding: 0.4rem 0.8rem; font-size: 0.8rem;">Cancelar</button>
+        </div>
+        
+        <form id="user-form">
+          <input type="hidden" id="user-id">
+          
+          <div class="form-group">
+            <label for="user-name">Nombre Completo</label>
+            <input type="text" id="user-name" class="form-control" placeholder="Ej. Juan Pérez" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="user-email">Correo Electrónico</label>
+            <input type="email" id="user-email" class="form-control" placeholder="Ej. juan@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="user-role">Rol / Puesto</label>
+            <input type="text" id="user-role" class="form-control" placeholder="Ej. Ingeniero de Software, Diseñador">
+          </div>
+          
+          <button type="submit" id="submit-btn" class="btn btn-primary">➕ Guardar Usuario</button>
+        </form>
+      </div>
+
+      <!-- Panel de Visualización del Listado -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>👥 Listado de Usuarios</h2>
+          <button id="refresh-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">🔄 Refrescar</button>
+        </div>
+        
+        <div id="users-container" class="user-list">
+          <!-- Dinamico -->
+        </div>
+      </div>
+
+      <!-- Consola de Peticiones HTTP en tiempo real -->
+      <div class="panel grid-full-width">
+        <div class="panel-header">
+          <h2>⚡ Consola de Monitoreo HTTP (Live Headers Log)</h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted)">Observa el intercambio de headers exactos</span>
+        </div>
+        <div id="log-monitor" class="log-monitor">
+          <div style="color: var(--text-muted); font-style: italic;">Esperando interacciones de API para registrar tráfico...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Contenedor para notificaciones -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Lógica Interactiva Frontend -->
+  <script>
+    // Configuration keys
+    const API_URL = '/api/users';
+    const AUTH_KEY = 'fha5HpDXSXSjKU0QCbdXiz1a';
+    const WRITE_TOKEN = 'HIZe4D32twWOUP9h0I1IVTlr';
+
+    // State
+    let isEditing = false;
+
+    // DOM Elements
+    const userForm = document.getElementById('user-form');
+    const userIdInput = document.getElementById('user-id');
+    const userNameInput = document.getElementById('user-name');
+    const userEmailInput = document.getElementById('user-email');
+    const userRoleInput = document.getElementById('user-role');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+    const usersContainer = document.getElementById('users-container');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const logMonitor = document.getElementById('log-monitor');
+    const toastContainer = document.getElementById('toast-container');
+
+    // Toasts helper
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <span style="font-size: 1.2rem;">${type === 'success' ? '🚀' : '⚠️'}</span>
+        <div>${message}</div>
+      `;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Logger helper
+    function logHttpExchange(method, url, requestHeaders, requestBody, status, responseBody) {
+      // Clear initial guide message
+      if (logMonitor.children.length === 1 && logMonitor.children[0].style.fontStyle === 'italic') {
+        logMonitor.innerHTML = '';
+      }
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      if (method === 'POST') entry.style.borderLeftColor = '#f59e0b';
+      if (method === 'PUT') entry.style.borderLeftColor = '#8b5cf6';
+      if (method === 'DELETE') entry.style.borderLeftColor = '#ef4444';
+      if (method === 'GET') entry.style.borderLeftColor = '#06b6d4';
+
+      const headersFormatted = Object.entries(requestHeaders)
+        .map(([k, v]) => `  ${k}: ${v}`)
+        .join('\n');
+
+      const bodySection = requestBody ? `\n\n[Body]\n${JSON.stringify(requestBody, null, 2)}` : '';
+
+      entry.innerHTML = `
+        <div class="log-header">
+          <span class="log-method method-${method.toLowerCase()}">${method} ${url}</span>
+          <span class="log-status status-${status.toString()[0]}xx">${status}</span>
+        </div>
+        <div class="log-body">> Petición Enviada:\n[Headers]\n${headersFormatted}${bodySection}\n\n< Respuesta Recibida:\n${JSON.stringify(responseBody, null, 2)}</div>
+      `;
+      logMonitor.appendChild(entry);
+      logMonitor.scrollTop = logMonitor.scrollHeight;
+    }
+
+    // Fetch and render users
+    async function fetchUsers() {
+      const headers = {
+        'Authorization': AUTH_KEY
+      };
+
+      try {
+        const response = await fetch(API_URL, { headers });
+        const result = await response.json();
+        
+        logHttpExchange('GET', API_URL, headers, null, response.status, result);
+
+        if (response.ok) {
+          renderUsers(result.data);
+        } else {
+          showToast(result.message || 'Error al obtener usuarios', 'error');
+        }
+      } catch (error) {
+        showToast('Error al conectar con la API', 'error');
+        console.error(error);
+      }
+    }
+
+    // Render users cards
+    function renderUsers(users) {
+      usersContainer.innerHTML = '';
+      
+      if (!users || users.length === 0) {
+        usersContainer.innerHTML = `
+          <div class="empty-state">
+            <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🌌</span>
+            Aún no hay usuarios en el sistema. ¡Crea uno!
+          </div>
+        `;
+        return;
+      }
+
+      users.forEach(user => {
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        card.innerHTML = `
+          <div class="user-info">
+            <h3>
+              ${user.name} 
+              <span class="user-role-badge">${user.role || 'User'}</span>
+            </h3>
+            <p>📧 ${user.email}</p>
+          </div>
+          <div class="user-actions">
+            <button class="action-btn action-btn-edit" onclick="startEdit(${JSON.stringify(user).replace(/"/g, '&quot;')})" title="Editar usuario">✏️</button>
+            <button class="action-btn action-btn-delete" onclick="deleteUser(${user.id})" title="Eliminar usuario">🗑️</button>
+          </div>
+        `;
+        usersContainer.appendChild(card);
+      });
+    }
+
+    // Create or update user submit
+    userForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = userNameInput.value;
+      const email = userEmailInput.value;
+      const role = userRoleInput.value;
+      const userId = userIdInput.value;
+
+      const payload = { name, email, role };
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': AUTH_KEY,
+        'token': WRITE_TOKEN
+      };
+
+      try {
+        let response;
+        let url = API_URL;
+        let method = 'POST';
+
+        if (isEditing) {
+          method = 'PUT';
+          url = `${API_URL}/${userId}`;
+          response = await fetch(url, {
+            method,
+            headers,
+            body: JSON.stringify(payload)
+          });
+        } else {
+          response = await fetch(url, {
+            method,
+            headers,
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const result = await response.json();
+        logHttpExchange(method, url, headers, payload, response.status, result);
+
+        if (response.ok) {
+          showToast(isEditing ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
+          resetForm();
+          fetchUsers();
+        } else {
+          showToast(result.message || 'Ocurrió un error', 'error');
+        }
+      } catch (error) {
+        showToast('Error al conectar con la API', 'error');
+        console.error(error);
+      }
+    });
+
+    // Delete user
+    async function deleteUser(id) {
+      if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
+
+      const url = `${API_URL}/${id}`;
+      const headers = {
+        'Authorization': AUTH_KEY,
+        'token': WRITE_TOKEN
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers
+        });
+        const result = await response.json();
+        
+        logHttpExchange('DELETE', url, headers, null, response.status, result);
+
+        if (response.ok) {
+          showToast('Usuario eliminado exitosamente');
+          if (isEditing && userIdInput.value == id) {
+            resetForm();
+          }
+          fetchUsers();
+        } else {
+          showToast(result.message || 'Error al eliminar usuario', 'error');
+        }
+      } catch (error) {
+        showToast('Error al conectar con la API', 'error');
+        console.error(error);
+      }
+    }
+
+    // Set form to edit mode
+    window.startEdit = function(user) {
+      isEditing = true;
+      userIdInput.value = user.id;
+      userNameInput.value = user.name;
+      userEmailInput.value = user.email;
+      userRoleInput.value = user.role || '';
+      
+      formTitle.innerHTML = `✏️ Editar Usuario (ID: ${user.id})`;
+      submitBtn.innerHTML = '💾 Actualizar Usuario';
+      cancelEditBtn.style.display = 'inline-block';
+      
+      userNameInput.focus();
+    };
+
+    // Reset Form to Create mode
+    function resetForm() {
+      isEditing = false;
+      userIdInput.value = '';
+      userForm.reset();
+      
+      formTitle.innerHTML = '👤 Crear Nuevo Usuario';
+      submitBtn.innerHTML = '➕ Guardar Usuario';
+      cancelEditBtn.style.display = 'none';
+    }
+
+    // Event listeners
+    cancelEditBtn.addEventListener('click', resetForm);
+    refreshBtn.addEventListener('click', fetchUsers);
+
+    // Initial Load
+    window.onload = () => {
+      fetchUsers();
+    };
+  </script>
+</body>
+</html>
