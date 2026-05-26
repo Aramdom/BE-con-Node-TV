@@ -1,172 +1,53 @@
-# Secure User CRUD API 🚀
+# Trabajos y actividades BE con Node TV
 
-Este es un proyecto premium de **ExpressJS** con arquitectura de módulos moderna (ES Modules) que implementa un CRUD básico de usuarios en memoria, respaldado por middlewares personalizados de seguridad muy estrictos.
+Este repositorio contiene dos proyectos backend desarrollados en Node.js y Express utilizando TypeScript:
+1. Trabajo 1: Secure CRUD API (gestión de usuarios protegida por cabeceras de seguridad).
+2. Trabajo 2: Autenticación y Acortador de URLs (sistema de registro, login con hash bcryptjs y acortador de enlaces con colisión cero).
 
----
-
-## 🔒 Middlewares de Seguridad
-
-Para poder interactuar exitosamente con la API, se deben enviar las siguientes cabeceras HTTP:
-
-1. **Autorización Global (Todos los métodos)**:
-   - Cabecera: `Authorization`
-   - Valor requerido: `fha5HpDXSXSjKU0QCbdXiz1a`
-   - *Si no se envía o es incorrecto, el servidor responderá con un código `401 Unauthorized`.*
-
-2. **Cabecera Especial para Operaciones de Escritura (POST, PUT, DELETE)**:
-   - Cabecera: `token`
-   - Valor requerido: `HIZe4D32twWOUP9h0I1IVTlr`
-   - *Si se realiza una petición no-GET y esta cabecera no está presente o no coincide, el servidor responderá con un código `403 Forbidden`.*
+Ambos proyectos se encuentran integrados y listos para interactuar en una interfaz web unificada de tipo portafolio.
 
 ---
 
-## 📁 Estructura del Código
+## Requisitos Previos
 
-El proyecto está diseñado de forma modular y mantenible:
-- `src/server.js`: Punto de entrada que inicializa el puerto y maneja apagados limpios.
-- `src/app.js`: Configura los middlewares globales e integra el enrutador.
-- `src/middleware/auth.js`: Contiene las funciones middlewares de validación de credenciales.
-- `src/routes/users.js`: Define el CRUD de usuarios con validaciones de cuerpo y almacenamiento temporal.
+Para ejecutar esta aplicación, asegúrese de tener instalado y activo en su sistema operativo:
+* Docker Desktop
 
 ---
 
-## 🛠️ Instalación y Uso Local
+## Instrucciones de Ejecución
 
-Sigue estos pasos para levantar la API en tu entorno local:
+Siga estos sencillos pasos para compilar y desplegar los proyectos en su entorno local:
 
-1. **Instalar Dependencias**:
+1. Abra una terminal en el directorio del proyecto (`BE-con-Node-TV`).
+2. Compile e inicie el contenedor de Docker ejecutando el siguiente comando:
    ```bash
-   npm install
+   docker compose up --build -d
+   ```
+3. Una vez que la terminal indique que el contenedor ha iniciado, abra su navegador web favorito y acceda a la siguiente dirección:
+   ```text
+   http://localhost:3000
    ```
 
-2. **Iniciar en Modo de Desarrollo** (con recarga automática mediante `nodemon`):
-   ```bash
-   npm run dev
-   ```
+---
 
-3. **Iniciar en Modo de Producción**:
-   ```bash
-   npm start
-   ```
+## Estructura de la Interfaz
 
-El servidor estará escuchando en la dirección: `http://localhost:3000`
+La aplicación utiliza un menú de navegación lateral para interactuar de manera independiente con cada trabajo:
+
+* **Mi Portafolio:** Vista de presentación inicial de los proyectos y actividades.
+* **Trabajo 1: Secure CRUD:** Panel para gestionar usuarios en memoria. Este módulo requiere enviar credenciales específicas en las cabeceras HTTP de las peticiones para validar accesos (simulado en el panel interactivo).
+* **Trabajo 2: Acortador de URLs:** Panel que incluye un flujo completo de registro, verificación por código e inicio de sesión. Una vez autenticado, permite acortar enlaces originales y gestionar su estado (activación o desactivación de redirecciones).
 
 ---
 
-## 📡 Guía de Endpoints y Ejemplos de Pruebas (cURL)
+## Comandos Útiles de Administración
 
-A continuación se detallan los endpoints del CRUD de usuarios y los comandos `cURL` exactos para probarlos:
-
-### 1. Listar Usuarios (GET)
-Obtiene todos los usuarios de la base de datos temporal.
-- **Ruta**: `/api/users`
-- **Cabeceras requeridas**:
-  - `Authorization: fha5HpDXSXSjKU0QCbdXiz1a`
-
-**Ejemplo de Comando:**
-```bash
-curl -i -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" http://localhost:3000/api/users
-```
-
----
-
-### 2. Obtener un Usuario por ID (GET)
-Busca y retorna la información de un usuario específico.
-- **Ruta**: `/api/users/:id`
-- **Cabeceras requeridas**:
-  - `Authorization: fha5HpDXSXSjKU0QCbdXiz1a`
-
-**Ejemplo de Comando (para ID 1):**
-```bash
-curl -i -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" http://localhost:3000/api/users/1
-```
-
----
-
-### 3. Crear un Usuario (POST)
-Registra un nuevo usuario en memoria con validaciones de campos y correo.
-- **Ruta**: `/api/users`
-- **Cabeceras requeridas**:
-  - `Authorization: fha5HpDXSXSjKU0QCbdXiz1a`
-  - `token: HIZe4D32twWOUP9h0I1IVTlr`
-  - `Content-Type: application/json`
-
-**Cuerpo de Petición (JSON):**
-```json
-{
-  "name": "Grace Hopper",
-  "email": "grace.hopper@example.com",
-  "role": "Computer Scientist"
-}
-```
-
-**Ejemplo de Comando:**
-```bash
-curl -i -X POST -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" \
-  -H "token: HIZe4D32twWOUP9h0I1IVTlr" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Grace Hopper", "email": "grace.hopper@example.com", "role": "Computer Scientist"}' \
-  http://localhost:3000/api/users
-```
-
----
-
-### 4. Actualizar un Usuario (PUT)
-Actualiza de manera parcial los datos de un usuario existente.
-- **Ruta**: `/api/users/:id`
-- **Cabeceras requeridas**:
-  - `Authorization: fha5HpDXSXSjKU0QCbdXiz1a`
-  - `token: HIZe4D32twWOUP9h0I1IVTlr`
-  - `Content-Type: application/json`
-
-**Cuerpo de Petición (JSON):**
-```json
-{
-  "name": "Grace Brewster Murray Hopper",
-  "role": "Rear Admiral"
-}
-```
-
-**Ejemplo de Comando (para ID 3):**
-```bash
-curl -i -X PUT -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" \
-  -H "token: HIZe4D32twWOUP9h0I1IVTlr" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Grace Brewster Murray Hopper", "role": "Rear Admiral"}' \
-  http://localhost:3000/api/users/3
-```
-
----
-
-### 5. Eliminar un Usuario (DELETE)
-Remueve permanentemente un usuario de la lista.
-- **Ruta**: `/api/users/:id`
-- **Cabeceras requeridas**:
-  - `Authorization: fha5HpDXSXSjKU0QCbdXiz1a`
-  - `token: HIZe4D32twWOUP9h0I1IVTlr`
-
-**Ejemplo de Comando (para ID 2):**
-```bash
-curl -i -X DELETE -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" \
-  -H "token: HIZe4D32twWOUP9h0I1IVTlr" \
-  http://localhost:3000/api/users/2
-```
-
----
-
-## 🧪 Pruebas de Flujos de Error
-
-### Fallo de Middleware Global (Sin Authorization):
-```bash
-curl -i http://localhost:3000/api/users
-# Retornará: HTTP/1.1 401 Unauthorized
-```
-
-### Fallo de Middleware de Escritura (POST sin Token):
-```bash
-curl -i -X POST -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Prueba", "email": "test@test.com"}' \
-  http://localhost:3000/api/users
-# Retornará: HTTP/1.1 403 Forbidden
-```
+* **Ver los registros (logs) del servidor en tiempo real:**
+  ```bash
+  docker compose logs -f
+  ```
+* **Detener la aplicación y liberar los puertos:**
+  ```bash
+  docker compose down
+  ```
