@@ -1,9 +1,18 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 
 const router = Router();
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 // Memory-based user storage seed
-let users = [
+let users: User[] = [
   {
     id: 1,
     name: 'Ada Lovelace',
@@ -23,7 +32,7 @@ let users = [
 let nextId = 3;
 
 // Helper to validate email format
-const isValidEmail = (email) => {
+const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
@@ -32,7 +41,7 @@ const isValidEmail = (email) => {
  * GET /api/users
  * Returns list of all users.
  */
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     count: users.length,
@@ -44,7 +53,7 @@ router.get('/', (req, res) => {
  * GET /api/users/:id
  * Returns a specific user by ID.
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', (req: Request, res: Response) => {
   const userId = parseInt(req.params.id, 10);
   const user = users.find(u => u.id === userId);
 
@@ -66,7 +75,7 @@ router.get('/:id', (req, res) => {
  * POST /api/users
  * Creates a new user.
  */
-router.post('/', (req, res) => {
+router.post('/', (req: Request, res: Response) => {
   const { name, email, role } = req.body;
 
   // Validation
@@ -105,7 +114,7 @@ router.post('/', (req, res) => {
   }
 
   // Create new user
-  const newUser = {
+  const newUser: User = {
     id: nextId++,
     name: name.trim(),
     email: email.trim().toLowerCase(),
@@ -126,7 +135,7 @@ router.post('/', (req, res) => {
  * PUT /api/users/:id
  * Updates an existing user details (name, email, role).
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', (req: Request, res: Response) => {
   const userId = parseInt(req.params.id, 10);
   const userIndex = users.findIndex(u => u.id === userId);
 
@@ -162,7 +171,7 @@ router.put('/:id', (req, res) => {
   }
 
   // Construct updated fields
-  const updatedUser = {
+  const updatedUser: User = {
     ...currentUser,
     name: name !== undefined ? name.trim() : currentUser.name,
     email: email !== undefined ? email.trim().toLowerCase() : currentUser.email,
@@ -192,7 +201,7 @@ router.put('/:id', (req, res) => {
  * DELETE /api/users/:id
  * Deletes a user by ID.
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req: Request, res: Response) => {
   const userId = parseInt(req.params.id, 10);
   const userIndex = users.findIndex(u => u.id === userId);
 

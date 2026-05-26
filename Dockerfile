@@ -1,24 +1,21 @@
-# Use lightweight Node Alpine image
-FROM node:20-alpine
-
-# Set working directory inside the container
+# Stage 1: Build (Compile TypeScript)
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-# Copy dependency manifests
 COPY package*.json ./
-
-# Install only production dependencies
-RUN npm install --production
-
-# Copy the rest of the application files
+RUN npm install
 COPY . .
+RUN npm run build
 
-# Expose the API port
+# Stage 2: Production Run
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --omit=dev
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./dist/public
+
 EXPOSE 3000
-
-# Set environment to production
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Command to run the application
-CMD ["npm", "start"]
+CMD ["node", "dist/src/server.js"]

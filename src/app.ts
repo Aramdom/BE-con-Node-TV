@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { requireApiKey, requireWriteToken } from './middleware/auth.js';
@@ -19,7 +19,7 @@ app.use('/api', requireWriteToken);
 // User CRUD Router under /api/users
 app.use('/api/users', usersRouter);
 
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     error: 'Not Found',
@@ -27,7 +27,8 @@ app.use((req, res) => {
   });
 });
 
-app.use((err, req, res, next) => {
+// Error handling middleware (must have 4 arguments)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({
     success: false,
