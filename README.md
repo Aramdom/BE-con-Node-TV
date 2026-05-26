@@ -1,14 +1,11 @@
-# Secure User CRUD API 🚀
+# Proyecto de clase WEB
 
-Este es un proyecto premium de **ExpressJS** con arquitectura de módulos moderna (ES Modules) que implementa un CRUD básico de usuarios en memoria, respaldado por middlewares personalizados de seguridad muy estrictos.
 
----
-
-## 🔒 Middlewares de Seguridad
+## Midlewares de Seguridad
 
 Para poder interactuar exitosamente con la API, se deben enviar las siguientes cabeceras HTTP:
 
-1. **Autorización Global (Todos los métodos)**:
+1. Autorización Global (Todos los métodos):
    - Cabecera: `Authorization`
    - Valor requerido: `fha5HpDXSXSjKU0QCbdXiz1a`
    - *Si no se envía o es incorrecto, el servidor responderá con un código `401 Unauthorized`.*
@@ -20,7 +17,7 @@ Para poder interactuar exitosamente con la API, se deben enviar las siguientes c
 
 ---
 
-## 📁 Estructura del Código
+# Estructura del Código
 
 El proyecto está diseñado de forma modular y mantenible:
 - `src/server.js`: Punto de entrada que inicializa el puerto y maneja apagados limpios.
