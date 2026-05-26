@@ -50,7 +50,7 @@ El servidor estará escuchando en la dirección: `http://localhost:3000`
 
 ---
 
-## 📡 Guía de Endpoints y Ejemplos de Pruebas (cURL)
+## Guía de Endpoints y Ejemplos de Pruebas (cURL)
 
 A continuación se detallan los endpoints del CRUD de usuarios y los comandos `cURL` exactos para probarlos:
 
@@ -151,7 +151,7 @@ curl -i -X DELETE -H "Authorization: fha5HpDXSXSjKU0QCbdXiz1a" \
 
 ---
 
-## 🧪 Pruebas de Flujos de Error
+## Pruebas de Flujos de Error
 
 ### Fallo de Middleware Global (Sin Authorization):
 ```bash
