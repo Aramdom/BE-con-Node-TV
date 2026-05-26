@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de usuarios</title>
+  <title>Developer Portfolio Hub & Backend Showcase</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,19 +11,20 @@
   
   <style>
     :root {
-      --bg-gradient: radial-gradient(circle at 50% 0%, #1a153b 0%, #0d0b18 50%, #07060d 100%);
-      --panel-bg: rgba(20, 18, 38, 0.45);
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --primary: #8b5cf6;
-      --primary-hover: #7c3aed;
-      --secondary: #06b6d4;
-      --secondary-hover: #0891b2;
+      --bg-gradient: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+      --panel-bg: #ffffff;
+      --sidebar-bg: #f9fafb;
+      --panel-border: #e5e7eb;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #0d9488;
+      --secondary-hover: #0f766e;
       --danger: #ef4444;
       --danger-hover: #dc2626;
       --success: #10b981;
-      --glow-color: rgba(139, 92, 246, 0.15);
+      --glow-color: rgba(79, 70, 229, 0.05);
     }
 
     * {
@@ -38,7 +39,7 @@
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
-      padding: 2rem 1.5rem;
+      display: flex;
     }
 
     h1, h2, h3, h4 {
@@ -47,115 +48,138 @@
       letter-spacing: -0.02em;
     }
 
-    /* Container layout */
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
+    /* Layout structure */
+    .app-layout {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--panel-border);
+      padding: 2.5rem 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 2rem;
+      flex-shrink: 0;
     }
 
-    /* Header styling with glow */
-    header {
+    .profile-card {
       text-align: center;
-      padding: 2.5rem;
-      background: var(--panel-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--panel-border);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 40px var(--glow-color);
-      position: relative;
-      overflow: hidden;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--panel-border);
     }
 
-    header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 25%;
-      width: 50%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      margin: 0 auto 1rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
     }
 
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #fff 30%, #a78bfa 70%, #22d3ee 100%);
+    .profile-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(135deg, #111827, #4f46e5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    header p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
-
-    /* Badge group */
-    .credentials-info {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 1.5rem;
-    }
-
-    .badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 50px;
+    .profile-card p {
       font-size: 0.85rem;
       color: var(--text-muted);
     }
 
-    .badge strong {
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      list-style: none;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-nav-item:hover {
+      background: rgba(0, 0, 0, 0.03);
       color: var(--text-main);
-      font-family: 'Fira Code', monospace;
     }
 
-    .badge.active {
-      border-color: rgba(6, 182, 212, 0.3);
-      background: rgba(6, 182, 212, 0.05);
+    .sidebar-nav-item.active {
+      background: rgba(79, 70, 229, 0.08);
+      border-color: rgba(79, 70, 229, 0.2);
+      color: var(--primary);
     }
 
-    /* Grid Layout */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr;
+    .sidebar-footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding-top: 1rem;
+      border-top: 1px solid var(--panel-border);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex-grow: 1;
+      padding: 2.5rem;
+      max-width: 1400px;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+      flex-direction: column;
       gap: 2rem;
     }
 
-    @media (min-width: 900px) {
-      .dashboard-grid {
-        grid-template-columns: 1.1fr 0.9fr;
-      }
-      .grid-full-width {
-        grid-column: span 2;
-      }
+    .tab-panel.active {
+      display: flex;
     }
 
-    /* Panel Card */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Generic UI Panels */
     .panel {
       background: var(--panel-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
       border-radius: 20px;
       padding: 2rem;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.03), 0 1px 3px 0 rgba(0, 0, 0, 0.01);
+      transition: all 0.3s ease;
     }
 
     .panel:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 92, 246, 0.05);
+      border-color: #d1d5db;
+      box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.06);
     }
 
     .panel-header {
@@ -163,19 +187,19 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--panel-border);
       padding-bottom: 0.75rem;
     }
 
     .panel-header h2 {
       font-size: 1.4rem;
-      color: #fff;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    /* Custom Form elements */
+    /* Forms */
     .form-group {
       margin-bottom: 1.25rem;
     }
@@ -193,8 +217,8 @@
     .form-control {
       width: 100%;
       padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff;
+      border: 1px solid #d1d5db;
       border-radius: 12px;
       color: var(--text-main);
       font-family: inherit;
@@ -204,9 +228,9 @@
 
     .form-control:focus {
       outline: none;
-      background: rgba(255, 255, 255, 0.08);
+      background: #ffffff;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
     /* Buttons */
@@ -223,82 +247,132 @@
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       border: none;
       color: #fff;
-      width: 100%;
+      text-decoration: none;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), #a78bfa);
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
     }
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
       color: var(--text-main);
-      width: auto;
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.2);
+      background: #e5e7eb;
     }
 
-    /* User Grid Card */
+    .btn-danger {
+      background: linear-gradient(135deg, var(--danger), #f87171);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Portfolio Home UI */
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.06) 0%, rgba(13, 148, 136, 0.06) 100%), var(--panel-bg);
+    }
+
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.08) 0%, transparent 70%);
+      filter: blur(40px);
+    }
+
+    .hero-panel h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #111827 30%, #4f46e5 70%, #0d9488 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .tech-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .tech-card:hover {
+      transform: translateY(-5px);
+      border-color: #d1d5db;
+      background: #f3f4f6;
+    }
+
+    .tech-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tech-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .tech-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* CRUD List View */
     .user-list {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       max-height: 500px;
       overflow-y: auto;
-      padding-right: 0.25rem;
-    }
-
-    .user-list::-webkit-scrollbar {
-      width: 6px;
-    }
-    .user-list::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-    }
-    .user-list::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-    }
-    .user-list::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
     }
 
     .user-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
       border-radius: 14px;
       padding: 1.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       transition: all 0.25s ease;
-      animation: fadeIn 0.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .user-card:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.1);
+      background: #f3f4f6;
+      border-color: #d1d5db;
       transform: scale(1.01);
     }
 
     .user-info h3 {
       font-size: 1.1rem;
-      color: #fff;
+      color: var(--text-main);
       margin-bottom: 0.25rem;
       display: flex;
       align-items: center;
@@ -307,17 +381,12 @@
 
     .user-role-badge {
       font-size: 0.7rem;
-      background: rgba(139, 92, 246, 0.15);
-      color: #c084fc;
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--primary);
       padding: 0.15rem 0.5rem;
       border-radius: 50px;
       font-weight: 600;
-      border: 1px solid rgba(139, 92, 246, 0.25);
-    }
-
-    .user-info p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      border: 1px solid rgba(79, 70, 229, 0.25);
     }
 
     .user-actions {
@@ -326,8 +395,8 @@
     }
 
     .action-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff;
+      border: 1px solid #d1d5db;
       width: 36px;
       height: 36px;
       border-radius: 10px;
@@ -340,26 +409,17 @@
     }
 
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
+      background: #f3f4f6;
+      color: var(--text-main);
     }
 
-    .action-btn-edit:hover {
-      border-color: var(--secondary);
-      color: var(--secondary);
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
-    }
+    .action-btn-edit:hover { border-color: var(--secondary); color: var(--secondary); }
+    .action-btn-delete:hover { border-color: var(--danger); color: var(--danger); }
 
-    .action-btn-delete:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
-    }
-
-    /* Logs & HTTP Monitor */
+    /* Live Logs & Terminal styles */
     .log-monitor {
-      background: #090810;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: #0f172a;
+      border: 1px solid #e5e7eb;
       border-radius: 16px;
       padding: 1.25rem;
       font-family: 'Fira Code', monospace;
@@ -374,46 +434,136 @@
     .log-entry {
       border-left: 3px solid var(--primary);
       padding-left: 0.75rem;
-      animation: logFadeIn 0.3s ease-out;
     }
-
-    @keyframes logFadeIn {
-      from { opacity: 0; transform: translateX(-5px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .log-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.25rem;
-    }
-
-    .log-method {
-      font-weight: 700;
-      color: var(--secondary);
-    }
-    
-    .log-method.method-post { color: #f59e0b; }
-    .log-method.method-put { color: var(--primary); }
-    .log-method.method-delete { color: var(--danger); }
-    
-    .log-status {
-      font-weight: 600;
-    }
-    .status-2xx { color: var(--success); }
-    .status-4xx { color: var(--danger); }
 
     .log-body {
       white-space: pre-wrap;
       color: #93c5fd;
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(0, 0, 0, 0.2);
       padding: 0.5rem;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       font-size: 0.8rem;
+      margin-top: 0.25rem;
     }
 
-    /* Notification Toasts */
+    .status-2xx { color: var(--success); }
+    .status-4xx { color: var(--danger); }
+
+    /* Auth views styling */
+    .auth-container {
+      max-width: 480px;
+      margin: 2rem auto;
+    }
+
+    .auth-toggle {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .auth-toggle button {
+      flex: 1;
+      padding: 0.75rem;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .auth-toggle button.active {
+      background: rgba(79, 70, 229, 0.08);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* URL Manager Styling */
+    .url-manager-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 900px) {
+      .url-manager-grid {
+        grid-template-columns: 0.9fr 1.1fr;
+      }
+    }
+
+    .url-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .url-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .url-card:hover {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+
+    .url-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .url-card-original {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .url-card-short {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--secondary);
+      font-family: 'Fira Code', monospace;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .url-card-short:hover {
+      text-decoration: underline;
+    }
+
+    .status-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.inactive {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    /* Toast container */
     .toast-container {
       position: fixed;
       bottom: 2rem;
@@ -425,13 +575,12 @@
     }
 
     .toast {
-      background: rgba(20, 18, 38, 0.95);
+      background: #1f2937;
       border: 1px solid var(--panel-border);
-      backdrop-filter: blur(10px);
       padding: 1rem 1.5rem;
       border-radius: 12px;
-      color: var(--text-main);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      color: #f3f4f6;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       gap: 0.75rem;
@@ -444,137 +593,261 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
-    .toast.toast-success {
-      border-left: 4px solid var(--success);
-    }
-
-    .toast.toast-error {
-      border-left: 4px solid var(--danger);
-    }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-      font-weight: 300;
-    }
+    .toast-success { border-left: 4px solid var(--success); }
+    .toast-error { border-left: 4px solid var(--danger); }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="app-layout">
     
-    <header>
-      <h1>Lista de usuarios</h1>
-      <p>Prueba en tiempo real los endpoints de tu API protegidos por middlewares de autorización</p>
-      
-      <div class="credentials-info">
-        <div class="badge">
-          <span>Cabecera global:</span>
-          <strong>Authorization: fha5HpDXSXSjKU0QCbdXiz1a</strong>
-        </div>
-        <div class="badge active">
-          <span>Cabecera no-GET:</span>
-          <strong>token: HIZe4D32twWOUP9h0I1IVTlr</strong>
-        </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="profile-card">
+        <div class="avatar">A</div>
+        <h2>Aramdom</h2>
       </div>
-    </header>
 
-    <div class="dashboard-grid">
-      
-      <!-- Panel de Formulario (Crear/Modificar) -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2 id="form-title">👤 Crear Nuevo Usuario</h2>
-          <button id="cancel-edit" class="btn btn-secondary" style="display: none; padding: 0.4rem 0.8rem; font-size: 0.8rem;">Cancelar</button>
+      <nav>
+        <ul class="sidebar-menu">
+          <li class="sidebar-nav-item active" data-target="panel-home">
+            Mi Portafolio
+          </li>
+          <li class="sidebar-nav-item" data-target="panel-crud">
+            Trabajo 1: Secure CRUD
+          </li>
+          <li class="sidebar-nav-item" data-target="panel-shortener">
+            Trabajo 2: Acortador de URLs
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Secure Hub Portfolio</p>
+        <p style="opacity: 0.5; margin-top: 0.25rem;">v2.0 (TypeScript)</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel Wrapper -->
+    <main class="main-content">
+
+      <!-- ============================================== -->
+      <!-- TAB 1: HOME / PORTFOLIO INTRO                  -->
+      <!-- ============================================== -->
+      <section id="panel-home" class="tab-panel active">
+        <div class="panel hero-panel">
+          <h1>Trabajos y actividades BE con Node TV</h1>
         </div>
-        
-        <form id="user-form">
-          <input type="hidden" id="user-id">
-          
-          <div class="form-group">
-            <label for="user-name">Nombre Completo</label>
-            <input type="text" id="user-name" class="form-control" placeholder="Ej. Juan Pérez" required>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Proyectos Incluidos</h2>
           </div>
-          
-          <div class="form-group">
-            <label for="user-email">Correo Electrónico</label>
-            <input type="email" id="user-email" class="form-control" placeholder="Ej. juan@example.com" required>
+          <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+            <div>
+              <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Trabajo 1: Secure CRUD API</h3>
+              <p style="color: var(--text-muted); line-height: 1.5;">Un sistema de gestión de usuarios en memoria protegido por políticas de seguridad estrictas que exigen llaves de API globales y tokens personalizados de escritura. Cuenta con una consola HTTP en vivo para monitorear el flujo de cabeceras en tiempo real.</p>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem;">
+              <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Trabajo 2: Auth & Smart URL Shortener</h3>
+              <p style="color: var(--text-muted); line-height: 1.5;">Una suite completa con autenticación encriptada (`bcryptjs`), registro y verificación manual por código. Incluye un acortador de enlaces con **colisión de hash cero (0%)** y control dinámico de estados (activar/desactivar enlaces) con redirección 302 nativa.</p>
+            </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: TRABAJO 1: SECURE CRUD                  -->
+      <!-- ============================================== -->
+      <section id="panel-crud" class="tab-panel">
+        <div class="panel" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%), var(--panel-bg);">
+          <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: #fff;">Trabajo 1: Secure CRUD</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Prueba la manipulación de la API protegida con autenticación estricta por llaves en cabecera HTTP.</p>
           
-          <div class="form-group">
-            <label for="user-role">Rol / Puesto</label>
-            <input type="text" id="user-role" class="form-control" placeholder="Ej. Ingeniero de Software, Diseñador">
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+            <div class="badge">
+              <span>Cabecera global:</span>
+              <strong>Authorization: fha5HpDXSXSjKU0QCbdXiz1a</strong>
+            </div>
+            <div class="badge active" style="border-color: rgba(6, 182, 212, 0.3); background: rgba(6, 182, 212, 0.05);">
+              <span>Cabecera no-GET:</span>
+              <strong>token: HIZe4D32twWOUP9h0I1IVTlr</strong>
+            </div>
           </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="url-manager-grid">
           
-          <button type="submit" id="submit-btn" class="btn btn-primary">➕ Guardar Usuario</button>
-        </form>
-      </div>
+          <!-- Formulario CRUD -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 id="crud-form-title">Crear Nuevo Usuario</h2>
+              <button id="crud-cancel-edit" class="btn btn-secondary" style="display: none; padding: 0.4rem 0.8rem; font-size: 0.8rem;">Cancelar</button>
+            </div>
+            
+            <form id="crud-form">
+              <input type="hidden" id="crud-user-id">
+              
+              <div class="form-group">
+                <label for="crud-user-name">Nombre Completo</label>
+                <input type="text" id="crud-user-name" class="form-control" placeholder="Ej. Juan Pérez" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="crud-user-email">Correo Electrónico</label>
+                <input type="email" id="crud-user-email" class="form-control" placeholder="Ej. juan@example.com" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="crud-user-role">Rol / Puesto</label>
+                <input type="text" id="crud-user-role" class="form-control" placeholder="Ej. Ingeniero de Software">
+              </div>
+              
+              <button type="submit" id="crud-submit-btn" class="btn btn-primary" style="width: 100%;">Guardar Usuario</button>
+            </form>
+          </div>
 
-      <!-- Panel de Visualización del Listado -->
-      <div class="panel">
-        <div class="panel-header">
-          <h2>👥 Listado de Usuarios</h2>
-          <button id="refresh-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">🔄 Refrescar</button>
-        </div>
-        
-        <div id="users-container" class="user-list">
-          <!-- Dinamico -->
-        </div>
-      </div>
+          <!-- Listado CRUD -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Usuarios Gestionados</h2>
+              <button id="crud-refresh-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Refrescar</button>
+            </div>
+            
+            <div id="crud-users-container" class="user-list">
+              <!-- Dinámico -->
+            </div>
+          </div>
 
-      <!-- Consola de Peticiones HTTP en tiempo real -->
-      <div class="panel grid-full-width">
-        <div class="panel-header">
-          <h2>⚡ Consola de Monitoreo HTTP (Live Headers Log)</h2>
-          <span style="font-size: 0.8rem; color: var(--text-muted)">Observa el intercambio de headers exactos</span>
         </div>
-        <div id="log-monitor" class="log-monitor">
-          <div style="color: var(--text-muted); font-style: italic;">Esperando interacciones de API para registrar tráfico...</div>
+
+        <!-- Consola de logs en vivo -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Consola de Monitoreo HTTP (Live Headers Log)</h2>
+            <span style="font-size: 0.8rem; color: var(--text-muted)">Observa el intercambio de headers exactos en el CRUD</span>
+          </div>
+          <div id="crud-log-monitor" class="log-monitor">
+            <div style="color: var(--text-muted); font-style: italic;">Esperando interacciones del CRUD para registrar tráfico...</div>
+          </div>
         </div>
-      </div>
+      </section>
 
-    </div>
+      <!-- ============================================== -->
+      <!-- TAB 3: TRABAJO 2: URL SHORTENER WITH AUTH      -->
+      <!-- ============================================== -->
+      <section id="panel-shortener" class="tab-panel">
+        <div class="panel" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, transparent 100%), var(--panel-bg);">
+          <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: #000000;">Trabajo 2: Acortador de URLs</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Un sistema completo para acortar URLs con autenticación por hash (`bcryptjs`) y control de colisión de hash de forma automatizada.</p>
+        </div>
 
+        <!-- CONTENEDOR DE AUTENTICACIÓN (Se muestra si no está logueado) -->
+        <div id="auth-panel" class="panel auth-container">
+          <div class="auth-toggle">
+            <button id="btn-toggle-login" class="active">Iniciar Sesión</button>
+            <button id="btn-toggle-register">Registrarse</button>
+          </div>
+
+          <!-- Formulario Login -->
+          <form id="form-login">
+            <h3 style="margin-bottom: 1.5rem;">Ingresar a tu Cuenta</h3>
+            <div class="form-group">
+              <label for="login-email">Correo Electrónico</label>
+              <input type="email" id="login-email" class="form-control" placeholder="usuario@ejemplo.com" required>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Contraseña</label>
+              <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Iniciar Sesión</button>
+          </form>
+
+          <!-- Formulario Registro -->
+          <form id="form-register" style="display: none;">
+            <h3 style="margin-bottom: 1.5rem;">Crear Cuenta</h3>
+            <div class="form-group">
+              <label for="register-email">Correo Electrónico</label>
+              <input type="email" id="register-email" class="form-control" placeholder="usuario@ejemplo.com" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Contraseña</label>
+              <input type="password" id="register-password" class="form-control" placeholder="Min. 6 caracteres" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Registrar Usuario</button>
+          </form>
+
+          <!-- Formulario Verificación de código -->
+          <form id="form-verify" style="display: none;">
+            <h3 style="margin-bottom: 0.5rem; color: var(--success);">Verificar tu Cuenta</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+              Se ha enviado un código de seguridad. ¡Por conveniencia, lo hemos capturado de forma automática aquí abajo!
+            </p>
+            <div class="form-group">
+              <label for="verify-email">Confirmar Correo</label>
+              <input type="email" id="verify-email" class="form-control" required readonly>
+            </div>
+            <div class="form-group">
+              <label for="verify-code">Código de Verificación</label>
+              <input type="text" id="verify-code" class="form-control" placeholder="Ej: 541098" required style="font-family: 'Fira Code', monospace; letter-spacing: 0.2em; text-align: center; font-size: 1.25rem;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirmar y Activar Cuenta</button>
+          </form>
+        </div>
+
+        <!-- CONTENEDOR DEL ACORTADOR (Se muestra si está logueado) -->
+        <div id="shortener-panel" style="display: none;" class="url-manager-grid">
+          
+          <!-- Acortar URL -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Acortar un Enlace</h2>
+              <span id="user-display-badge" class="user-role-badge" style="background: rgba(6,182,212,0.15); color: #22d3ee; border-color: rgba(6,182,212,0.25);">user@example.com</span>
+            </div>
+
+            <form id="form-shorten">
+              <div class="form-group">
+                <label for="shorten-url">URL Original / Enlace Completo</label>
+                <input type="text" id="shorten-url" class="form-control" placeholder="Ej: https://github.com/Aramdom" required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Acortar Enlace</button>
+            </form>
+
+            <button id="btn-logout" class="btn btn-secondary" style="width: 100%; margin-top: 2rem;">Cerrar Sesión</button>
+          </div>
+
+          <!-- Listado de URLs del usuario -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Mis Enlaces Acortados</h2>
+              <button id="urls-refresh-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Recargar</button>
+            </div>
+
+            <div id="urls-container" class="url-list">
+              <!-- Dinámico -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <!-- Contenedor para notificaciones -->
+  <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>
 
-  <!-- Lógica Interactiva Frontend -->
+  <!-- Lógica Interactiva -->
   <script>
-    // Configuration keys
-    const API_URL = '/api/users';
-    const AUTH_KEY = 'fha5HpDXSXSjKU0QCbdXiz1a';
-    const WRITE_TOKEN = 'HIZe4D32twWOUP9h0I1IVTlr';
-
-    // State
-    let isEditing = false;
-
-    // DOM Elements
-    const userForm = document.getElementById('user-form');
-    const userIdInput = document.getElementById('user-id');
-    const userNameInput = document.getElementById('user-name');
-    const userEmailInput = document.getElementById('user-email');
-    const userRoleInput = document.getElementById('user-role');
-    const formTitle = document.getElementById('form-title');
-    const submitBtn = document.getElementById('submit-btn');
-    const cancelEditBtn = document.getElementById('cancel-edit');
-    const usersContainer = document.getElementById('users-container');
-    const refreshBtn = document.getElementById('refresh-btn');
-    const logMonitor = document.getElementById('log-monitor');
-    const toastContainer = document.getElementById('toast-container');
-
     // Toasts helper
     function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
       toast.innerHTML = `
-        <span style="font-size: 1.2rem;">${type === 'success' ? '🚀' : '⚠️'}</span>
         <div>${message}</div>
       `;
-      toastContainer.appendChild(toast);
+      container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(10px)';
@@ -582,11 +855,51 @@
       }, 3500);
     }
 
-    // Logger helper
-    function logHttpExchange(method, url, requestHeaders, requestBody, status, responseBody) {
-      // Clear initial guide message
-      if (logMonitor.children.length === 1 && logMonitor.children[0].style.fontStyle === 'italic') {
-        logMonitor.innerHTML = '';
+    // ----------------------------------------------------
+    // CONTROLADOR DE TABS (SIDEBAR)
+    // ----------------------------------------------------
+    const sidebarItems = document.querySelectorAll('.sidebar-nav-item');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    sidebarItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // Remover clases activas de la barra lateral
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        // Ocultar todos los paneles
+        tabPanels.forEach(p => p.classList.remove('active'));
+
+        // Activar el correspondiente
+        item.classList.add('active');
+        const targetPanelId = item.dataset.target;
+        document.getElementById(targetPanelId).classList.add('active');
+      });
+    });
+
+    // ----------------------------------------------------
+    // PROYECTO 1: SECURE CRUD INTERACTIVE CODE
+    // ----------------------------------------------------
+    const CRUD_API_URL = '/api/users';
+    const CRUD_AUTH_KEY = 'fha5HpDXSXSjKU0QCbdXiz1a';
+    const CRUD_WRITE_TOKEN = 'HIZe4D32twWOUP9h0I1IVTlr';
+
+    let crudIsEditing = false;
+
+    // DOM Elements
+    const crudForm = document.getElementById('crud-form');
+    const crudUserIdInput = document.getElementById('crud-user-id');
+    const crudUserNameInput = document.getElementById('crud-user-name');
+    const crudUserEmailInput = document.getElementById('crud-user-email');
+    const crudUserRoleInput = document.getElementById('crud-user-role');
+    const crudFormTitle = document.getElementById('crud-form-title');
+    const crudSubmitBtn = document.getElementById('crud-submit-btn');
+    const crudCancelEditBtn = document.getElementById('crud-cancel-edit');
+    const crudUsersContainer = document.getElementById('crud-users-container');
+    const crudRefreshBtn = document.getElementById('crud-refresh-btn');
+    const crudLogMonitor = document.getElementById('crud-log-monitor');
+
+    function logCrudHttp(method, url, requestHeaders, requestBody, status, responseBody) {
+      if (crudLogMonitor.children.length === 1 && crudLogMonitor.children[0].style.fontStyle === 'italic') {
+        crudLogMonitor.innerHTML = '';
       }
 
       const entry = document.createElement('div');
@@ -603,50 +916,38 @@
       const bodySection = requestBody ? `\n\n[Body]\n${JSON.stringify(requestBody, null, 2)}` : '';
 
       entry.innerHTML = `
-        <div class="log-header">
-          <span class="log-method method-${method.toLowerCase()}">${method} ${url}</span>
-          <span class="log-status status-${status.toString()[0]}xx">${status}</span>
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+          <span style="font-weight:700;" class="${method === 'GET' ? 'status-2xx' : ''}">${method} ${url}</span>
+          <span class="status-${status.toString()[0]}xx" style="font-weight:600;">${status}</span>
         </div>
         <div class="log-body">> Petición Enviada:\n[Headers]\n${headersFormatted}${bodySection}\n\n< Respuesta Recibida:\n${JSON.stringify(responseBody, null, 2)}</div>
       `;
-      logMonitor.appendChild(entry);
-      logMonitor.scrollTop = logMonitor.scrollHeight;
+      crudLogMonitor.appendChild(entry);
+      crudLogMonitor.scrollTop = crudLogMonitor.scrollHeight;
     }
 
-    // Fetch and render users
-    async function fetchUsers() {
-      const headers = {
-        'Authorization': AUTH_KEY
-      };
-
+    async function fetchCrudUsers() {
+      const headers = { 'Authorization': CRUD_AUTH_KEY };
       try {
-        const response = await fetch(API_URL, { headers });
+        const response = await fetch(CRUD_API_URL, { headers });
         const result = await response.json();
         
-        logHttpExchange('GET', API_URL, headers, null, response.status, result);
+        logCrudHttp('GET', CRUD_API_URL, headers, null, response.status, result);
 
         if (response.ok) {
-          renderUsers(result.data);
+          renderCrudUsers(result.data);
         } else {
           showToast(result.message || 'Error al obtener usuarios', 'error');
         }
       } catch (error) {
-        showToast('Error al conectar con la API', 'error');
-        console.error(error);
+        showToast('Error al conectar con la API del CRUD', 'error');
       }
     }
 
-    // Render users cards
-    function renderUsers(users) {
-      usersContainer.innerHTML = '';
-      
+    function renderCrudUsers(users) {
+      crudUsersContainer.innerHTML = '';
       if (!users || users.length === 0) {
-        usersContainer.innerHTML = `
-          <div class="empty-state">
-            <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🌌</span>
-            Aún no hay usuarios en el sistema. ¡Crea uno!
-          </div>
-        `;
+        crudUsersContainer.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted)">Aún no hay usuarios en el sistema.</div>`;
         return;
       }
 
@@ -655,45 +956,39 @@
         card.className = 'user-card';
         card.innerHTML = `
           <div class="user-info">
-            <h3>
-              ${user.name} 
-              <span class="user-role-badge">${user.role || 'User'}</span>
-            </h3>
-            <p>📧 ${user.email}</p>
+            <h3>${user.name} <span class="user-role-badge">${user.role || 'User'}</span></h3>
+            <p style="font-size:0.85rem; color:var(--text-muted)">📧 ${user.email}</p>
           </div>
           <div class="user-actions">
-            <button class="action-btn action-btn-edit" onclick="startEdit(${JSON.stringify(user).replace(/"/g, '&quot;')})" title="Editar usuario">✏️</button>
-            <button class="action-btn action-btn-delete" onclick="deleteUser(${user.id})" title="Eliminar usuario">🗑️</button>
+            <button class="action-btn action-btn-edit" onclick="startCrudEdit(${JSON.stringify(user).replace(/"/g, '&quot;')})">✏️</button>
+            <button class="action-btn action-btn-delete" onclick="deleteCrudUser(${user.id})">🗑️</button>
           </div>
         `;
-        usersContainer.appendChild(card);
+        crudUsersContainer.appendChild(card);
       });
     }
 
-    // Create or update user submit
-    userForm.addEventListener('submit', async (e) => {
+    crudForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const name = userNameInput.value;
-      const email = userEmailInput.value;
-      const role = userRoleInput.value;
-      const userId = userIdInput.value;
-
-      const payload = { name, email, role };
+      const payload = {
+        name: crudUserNameInput.value,
+        email: crudUserEmailInput.value,
+        role: crudUserRoleInput.value
+      };
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': AUTH_KEY,
-        'token': WRITE_TOKEN
+        'Authorization': CRUD_AUTH_KEY,
+        'token': CRUD_WRITE_TOKEN
       };
 
       try {
         let response;
-        let url = API_URL;
+        let url = CRUD_API_URL;
         let method = 'POST';
 
-        if (isEditing) {
+        if (crudIsEditing) {
           method = 'PUT';
-          url = `${API_URL}/${userId}`;
+          url = `${CRUD_API_URL}/${crudUserIdInput.value}`;
           response = await fetch(url, {
             method,
             headers,
@@ -708,88 +1003,310 @@
         }
 
         const result = await response.json();
-        logHttpExchange(method, url, headers, payload, response.status, result);
+        logCrudHttp(method, url, headers, payload, response.status, result);
 
         if (response.ok) {
-          showToast(isEditing ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
-          resetForm();
-          fetchUsers();
+          showToast(crudIsEditing ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
+          resetCrudForm();
+          fetchCrudUsers();
         } else {
-          showToast(result.message || 'Ocurrió un error', 'error');
+          showToast(result.message || 'Error al guardar usuario', 'error');
         }
       } catch (error) {
         showToast('Error al conectar con la API', 'error');
-        console.error(error);
       }
     });
 
-    // Delete user
-    async function deleteUser(id) {
+    async function deleteCrudUser(id) {
       if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) return;
-
-      const url = `${API_URL}/${id}`;
+      const url = `${CRUD_API_URL}/${id}`;
       const headers = {
-        'Authorization': AUTH_KEY,
-        'token': WRITE_TOKEN
+        'Authorization': CRUD_AUTH_KEY,
+        'token': CRUD_WRITE_TOKEN
       };
 
       try {
-        const response = await fetch(url, {
-          method: 'DELETE',
-          headers
-        });
+        const response = await fetch(url, { method: 'DELETE', headers });
         const result = await response.json();
-        
-        logHttpExchange('DELETE', url, headers, null, response.status, result);
+        logCrudHttp('DELETE', url, headers, null, response.status, result);
 
         if (response.ok) {
           showToast('Usuario eliminado exitosamente');
-          if (isEditing && userIdInput.value == id) {
-            resetForm();
-          }
-          fetchUsers();
+          fetchCrudUsers();
         } else {
-          showToast(result.message || 'Error al eliminar usuario', 'error');
+          showToast(result.message || 'Error al eliminar', 'error');
         }
       } catch (error) {
         showToast('Error al conectar con la API', 'error');
-        console.error(error);
       }
     }
 
-    // Set form to edit mode
-    window.startEdit = function(user) {
-      isEditing = true;
-      userIdInput.value = user.id;
-      userNameInput.value = user.name;
-      userEmailInput.value = user.email;
-      userRoleInput.value = user.role || '';
+    window.startCrudEdit = function(user) {
+      crudIsEditing = true;
+      crudUserIdInput.value = user.id;
+      crudUserNameInput.value = user.name;
+      crudUserEmailInput.value = user.email;
+      crudUserRoleInput.value = user.role || '';
       
-      formTitle.innerHTML = `✏️ Editar Usuario (ID: ${user.id})`;
-      submitBtn.innerHTML = '💾 Actualizar Usuario';
-      cancelEditBtn.style.display = 'inline-block';
-      
-      userNameInput.focus();
+      crudFormTitle.innerHTML = `✏️ Editar Usuario (ID: ${user.id})`;
+      crudSubmitBtn.innerHTML = '💾 Actualizar';
+      crudCancelEditBtn.style.display = 'inline-block';
     };
 
-    // Reset Form to Create mode
-    function resetForm() {
-      isEditing = false;
-      userIdInput.value = '';
-      userForm.reset();
-      
-      formTitle.innerHTML = '👤 Crear Nuevo Usuario';
-      submitBtn.innerHTML = '➕ Guardar Usuario';
-      cancelEditBtn.style.display = 'none';
+    function resetCrudForm() {
+      crudIsEditing = false;
+      crudUserIdInput.value = '';
+      crudForm.reset();
+      crudFormTitle.innerHTML = '👤 Crear Nuevo Usuario';
+      crudSubmitBtn.innerHTML = '➕ Guardar Usuario';
+      crudCancelEditBtn.style.display = 'none';
     }
 
-    // Event listeners
-    cancelEditBtn.addEventListener('click', resetForm);
-    refreshBtn.addEventListener('click', fetchUsers);
+    crudCancelEditBtn.addEventListener('click', resetCrudForm);
+    crudRefreshBtn.addEventListener('click', fetchCrudUsers);
 
-    // Initial Load
+    // ----------------------------------------------------
+    // PROYECTO 2: AUTH & URL SHORTENER CODE
+    // ----------------------------------------------------
+    let loggedInEmail = null;
+
+    // Toggle Forms
+    const btnToggleLogin = document.getElementById('btn-toggle-login');
+    const btnToggleRegister = document.getElementById('btn-toggle-register');
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+    const formVerify = document.getElementById('form-verify');
+    const authPanel = document.getElementById('auth-panel');
+    const shortenerPanel = document.getElementById('shortener-panel');
+    const userDisplayBadge = document.getElementById('user-display-badge');
+
+    btnToggleLogin.addEventListener('click', () => {
+      btnToggleLogin.classList.add('active');
+      btnToggleRegister.classList.remove('active');
+      formLogin.style.display = 'block';
+      formRegister.style.display = 'none';
+      formVerify.style.display = 'none';
+    });
+
+    btnToggleRegister.addEventListener('click', () => {
+      btnToggleRegister.classList.add('active');
+      btnToggleLogin.classList.remove('active');
+      formRegister.style.display = 'block';
+      formLogin.style.display = 'none';
+      formVerify.style.display = 'none';
+    });
+
+    // 1. Registro
+    formRegister.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast('Registro exitoso. Código generado.');
+          // Pasar al panel de verificación
+          formRegister.style.display = 'none';
+          formVerify.style.display = 'block';
+          document.getElementById('verify-email').value = email;
+          // Autocompletar por conveniencia
+          document.getElementById('verify-code').value = result.data.verificationCode;
+        } else {
+          showToast(result.message || 'Error en el registro', 'error');
+        }
+      } catch (error) {
+        showToast('Error de conexión', 'error');
+      }
+    });
+
+    // 2. Verificación
+    formVerify.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('verify-email').value;
+      const code = document.getElementById('verify-code').value;
+
+      try {
+        const response = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast('Cuenta verificada con éxito. Ya puedes ingresar.');
+          // Ir al login
+          btnToggleLogin.click();
+          document.getElementById('login-email').value = email;
+        } else {
+          showToast(result.message || 'Código incorrecto', 'error');
+        }
+      } catch (error) {
+        showToast('Error de conexión', 'error');
+      }
+    });
+
+    // 3. Login
+    formLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast('Inicio de sesión correcto.');
+          loggedInEmail = result.data.email;
+          userDisplayBadge.innerHTML = loggedInEmail;
+          
+          // Mostrar Dashboard del acortador
+          authPanel.style.display = 'none';
+          shortenerPanel.style.display = 'grid';
+
+          fetchUrls();
+        } else {
+          showToast(result.message || 'Error de credenciales', 'error');
+        }
+      } catch (error) {
+        showToast('Error de conexión', 'error');
+      }
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      loggedInEmail = null;
+      shortenerPanel.style.display = 'none';
+      authPanel.style.display = 'block';
+      btnToggleLogin.click();
+      formLogin.reset();
+      formRegister.reset();
+      formVerify.reset();
+    });
+
+    // 4. Registro de URL (Acortar)
+    const formShorten = document.getElementById('form-shorten');
+    formShorten.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const originalUrl = document.getElementById('shorten-url').value;
+
+      try {
+        const response = await fetch('/api/urls/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: loggedInEmail, originalUrl })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast('¡Enlace acortado con éxito!');
+          formShorten.reset();
+          fetchUrls();
+        } else {
+          showToast(result.message || 'Error al acortar', 'error');
+        }
+      } catch (error) {
+        showToast('Error de conexión', 'error');
+      }
+    });
+
+    // Listar URLs del usuario
+    const urlsContainer = document.getElementById('urls-container');
+    async function fetchUrls() {
+      if (!loggedInEmail) return;
+      try {
+        const response = await fetch(`/api/urls/list?email=${encodeURIComponent(loggedInEmail)}`);
+        const result = await response.json();
+
+        if (response.ok) {
+          renderUrls(result.data);
+        } else {
+          showToast('Error al recargar enlaces', 'error');
+        }
+      } catch (error) {
+        showToast('Error al conectar con la base de datos de enlaces', 'error');
+      }
+    }
+
+    function renderUrls(urls) {
+      urlsContainer.innerHTML = '';
+      if (!urls || urls.length === 0) {
+        urlsContainer.innerHTML = `<div style="text-align:center; padding:2.5rem; color:var(--text-muted)">Aún no tienes ningún enlace registrado.</div>`;
+        return;
+      }
+
+      urls.forEach(url => {
+        const card = document.createElement('div');
+        card.className = 'url-card';
+        const shortFullUrl = `${window.location.origin}/url/${url.shortCode}`;
+        
+        card.innerHTML = `
+          <div class="url-card-header">
+            <a href="${shortFullUrl}" target="_blank" class="url-card-short">/url/${url.shortCode}</a>
+            <span class="status-badge ${url.isActive ? 'active' : 'inactive'}">
+              ${url.isActive ? 'Activo' : 'Inactivo'}
+            </span>
+          </div>
+          <div class="url-card-original" title="${url.originalUrl}">Original: ${url.originalUrl}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+            <button class="btn btn-secondary" onclick="copyToClipboard('${shortFullUrl}')" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Copiar</button>
+            <button class="btn ${url.isActive ? 'btn-danger' : 'btn-primary'}" onclick="toggleUrlState('${url.id}', ${url.isActive})" style="padding:0.4rem 0.8rem; font-size:0.8rem; width:120px;">
+              ${url.isActive ? 'Desactivar' : 'Activar'}
+            </button>
+          </div>
+        `;
+        urlsContainer.appendChild(card);
+      });
+    }
+
+    // Copiar al portapapeles
+    window.copyToClipboard = function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('¡Enlace copiado al portapapeles!');
+      }).catch(err => {
+        showToast('Error al copiar', 'error');
+      });
+    };
+
+    // 6 & 7. Activar y Desactivar URL
+    window.toggleUrlState = async function(id, isCurrentlyActive) {
+      const endpoint = isCurrentlyActive ? '/api/urls/deactivate' : '/api/urls/activate';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          showToast(isCurrentlyActive ? 'Enlace desactivado exitosamente.' : 'Enlace activado exitosamente.');
+          fetchUrls();
+        } else {
+          showToast(result.message || 'Error al cambiar estado', 'error');
+        }
+      } catch (error) {
+        showToast('Error de conexión', 'error');
+      }
+    };
+
+    document.getElementById('urls-refresh-btn').addEventListener('click', fetchUrls);
+
+    // Initial loading
     window.onload = () => {
-      fetchUsers();
+      fetchCrudUsers();
     };
   </script>
 </body>
