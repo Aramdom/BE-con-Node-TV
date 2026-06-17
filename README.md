@@ -28,26 +28,3 @@ Siga estos sencillos pasos para compilar y desplegar los proyectos en su entorno
    ```text
    http://localhost:3000
    ```
-
----
-
-## Estructura de la Interfaz
-
-La aplicación utiliza un menú de navegación lateral para interactuar de manera independiente con cada trabajo:
-
-* **Mi Portafolio:** Vista de presentación inicial de los proyectos y actividades.
-* **Trabajo 1: Secure CRUD:** Panel para gestionar usuarios en memoria. Este módulo requiere enviar credenciales específicas en las cabeceras HTTP de las peticiones para validar accesos (simulado en el panel interactivo).
-* **Trabajo 2: Acortador de URLs:** Panel que incluye un flujo completo de registro, verificación por código e inicio de sesión. Una vez autenticado, permite acortar enlaces originales y gestionar su estado (activación o desactivación de redirecciones).
-
----
-
-## Comandos Útiles de Administración
-
-* **Ver los registros (logs) del servidor en tiempo real:**
-  ```bash
-  docker compose logs -f
-  ```
-* **Detener la aplicación y liberar los puertos:**
-  ```bash
-  docker compose down
-  ```
